@@ -13,15 +13,11 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Move")]
     public float moveSpeed = 7f;
-    //public float moveSlerp = 5f;
     public float slopeForce = 5f;
     float verticalVelocity = 0f;
 
     [Header("Rotation")]
-    public float inputAngle;            // Get angle by input.
-    public float rotationSlerp = 5f;    // This is used by smooth rotation If you don't use NavMeshAgent's rotation.
-    // True  : Character stares Camera's direction.
-    // False : The character looks in the direction in which it moves.
+    public float rotationSlerp = 5f;
 
     [Header("Jump")]
     public float gravity = 9.81f;
@@ -96,12 +92,13 @@ public class PlayerMovement : MonoBehaviour
             }
         }
     }
+
     Vector3 GetGroundNormal()
     {
         // Slope Check
         RaycastHit slopeHit;
         Vector3 groundNormal = Vector3.up;
-        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, 0.1f))
+        if (Physics.Raycast(transform.position, -transform.up, out slopeHit, 0.1f))
         {
             groundNormal = slopeHit.normal;
         }
@@ -134,12 +131,14 @@ public class PlayerMovement : MonoBehaviour
         // 2. Character moves Right -> Character rotates (inputAngle + Camera's current angle)
 
         // inputAngle : Front 0, Back 180, Left -90, Right 90
-        inputAngle = Mathf.Atan2(axisHor, axisVer) * Mathf.Rad2Deg;
+        float inputAngle = Mathf.Atan2(axisHor, axisVer) * Mathf.Rad2Deg;
 
         // Rotation backup
         Quaternion newRot = transform.rotation;  // Set new direction rotation value.
 
         // Stare
+        // True  : Character stares Camera's direction.
+        // False : The character looks in the direction in which it moves.
         if (isStaringFront)
         {
             newRot = Quaternion.Euler(Vector3.up * Camera.main.transform.eulerAngles.y);

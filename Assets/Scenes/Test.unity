@@ -4602,8 +4602,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletSpawnPoint: {fileID: 722252031}
   bulletName: Bullet
-  attackSpeed: 1
-  attackDelay: 0.5
+  delay: 1
+  shootingPerSec: 10
 --- !u!114 &985511911
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4709,7 +4709,6 @@ MonoBehaviour:
   slopeForce: 5
   inputAngle: 0
   rotationSlerp: 5
-  isStaringFront: 0
   gravity: 9.81
   jumpForce: 5
   dashSpeed: 20
@@ -7462,7 +7461,6 @@ MonoBehaviour:
   rotationSensitivity: 5
   zoomAxisMin: 0
   zoomAxisMax: 1
-  zoomSensitivity: 5
 --- !u!4 &1552523959
 Transform:
   m_ObjectHideFlags: 0
@@ -8340,7 +8338,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1763429413
 RectTransform:
   m_ObjectHideFlags: 0
@@ -10031,7 +10029,6 @@ MonoBehaviour:
   rotationSensitivity: 5
   zoomAxisMin: 0
   zoomAxisMax: 1
-  zoomSensitivity: 5
 --- !u!4 &2023664243
 Transform:
   m_ObjectHideFlags: 0

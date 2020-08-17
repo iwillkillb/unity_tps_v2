@@ -7,7 +7,6 @@ public class BikeMovement : MonoBehaviour
 {
     Rigidbody _Rigidbody;
 
-
     [Header("Ground Check")]
     public Transform groundCheckPoint;
     public float groundCheckRadius = 0.1f;
@@ -19,19 +18,14 @@ public class BikeMovement : MonoBehaviour
     public float slopeCheckRange = 5f;
     public float slopeForce = 1f;
 
-    [Header("Lean")]
-    public bool leanBodyWhenRotate = true;
-    public float rotationLeanAngle = 30f;
-    public float leanSpeed = 1f;
-    Quaternion currentLean;
-    Quaternion goalLean;
+    [Header("Rotation")]
+    public float rotationSlerp = 5f;
+    public bool isStaringFront = false;
 
     [Header("Movement")]
     public float maxSpeed = 50f;
     public float acceleration = 50f;
-    public float curveDegree = 90f;
     public float jumpForce = 50f;
-    Vector3 moveVector;
 
 
 
@@ -63,7 +57,28 @@ public class BikeMovement : MonoBehaviour
 
         // Ground Check
         isGrounded = Physics.CheckSphere(groundCheckPoint.position, groundCheckRadius, groundLayer);
+        /*
+        // Slope Force -> Moving on slope without bouncing.
+        if (!inputJump && isGrounded)
+        {
+            //_Rigidbody.AddForce(-GetGroundNormal() * slopeForce, ForceMode.VelocityChange);
+            _Rigidbody.AddRelativeForce(Vector3.down * slopeForce, ForceMode.VelocityChange);
+        }*/
 
+        Rotation(inputAxisHor, inputAxisVer, isStaringFront);
+        Movement(inputAxisHor, inputAxisVer);
+
+        // Jump on ground
+        if (inputJump && isGrounded)
+        {
+            _Rigidbody.AddRelativeForce(Vector3.up * jumpForce, ForceMode.VelocityChange);
+        }
+    }
+
+
+
+    Vector3 GetGroundNormal()
+    {
         // Slope Check
         RaycastHit slopeHit;
         Vector3 groundNormal = Vector3.up;
@@ -72,37 +87,49 @@ public class BikeMovement : MonoBehaviour
             groundNormal = slopeHit.normal;
         }
 
-        // Slope Force -> Moving on slope without bouncing.
-        if (!inputJump && !isGrounded)
+        return groundNormal;
+    }
+
+    void Rotation(float axisHor, float axisVer, bool isStaringFront)
+    {
+        // Character Rotation : Character and camera move in the apposite direction (in Y axis).
+        // Example : 
+        // 1. Input Right key -> inputAngle is 90
+        // 2. Character moves Right -> Character rotates (inputAngle + Camera's current angle)
+
+        // inputAngle : Front 0, Back 180, Left -90, Right 90
+        float inputAngle = Mathf.Atan2(axisHor, axisVer) * Mathf.Rad2Deg;
+
+        // Rotation backup
+        Quaternion newRot = transform.rotation;  // Set new direction rotation value.
+
+        // Stare
+        if (isStaringFront)
         {
-            _Rigidbody.AddForce(-groundNormal * slopeForce, ForceMode.VelocityChange);
+            newRot = Quaternion.Euler(Vector3.up * Camera.main.transform.eulerAngles.y);
+        }
+        // No stare -> Rotate only moving
+        else if (axisHor != 0f || axisVer != 0f)
+        {
+            newRot = Quaternion.Euler(Vector3.up * (inputAngle + Camera.main.transform.eulerAngles.y));
         }
 
-        // Lean
-        currentLean = transform.rotation;
-        goalLean = Quaternion.FromToRotation(transform.up, groundNormal) * transform.rotation;
-        if (leanBodyWhenRotate)
-        {
-            goalLean *= Quaternion.Euler(Vector3.forward * (-inputAxisHor * rotationLeanAngle));
-        }
-        transform.rotation = Quaternion.Lerp(currentLean, goalLean, leanSpeed * Time.deltaTime);
+        // Actual Rotation
+        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.FromToRotation(transform.up, GetGroundNormal()) * newRot, rotationSlerp * Time.deltaTime);
+    }
 
-        // Curve
-        if (inputAxisHor != 0f)
-        {
-            transform.Rotate(Vector3.up * inputAxisHor * curveDegree * Time.deltaTime);
-        }
+    void Movement(float axisHor, float axisVer)
+    {
+        // Use Input data
+        Vector3 moveAxis = Vector3.right * axisHor + Vector3.forward * axisVer;
 
-        // Accel
-        if ((inputAxisVer != 0f) && _Rigidbody.velocity.magnitude < maxSpeed && isGrounded)
-        {
-            _Rigidbody.AddRelativeForce((Vector3.forward * inputAxisVer) * acceleration, ForceMode.Acceleration);
-        }
+        // Get Camera's y rotation.
+        Quaternion moveDir = Quaternion.FromToRotation(transform.up, GetGroundNormal()) * Quaternion.Euler(Vector3.up * Camera.main.transform.eulerAngles.y);
 
-        // Jump on ground
-        if (inputJump && isGrounded)
+        // Actual Moving
+        if (_Rigidbody.velocity.magnitude < maxSpeed && isGrounded)
         {
-            _Rigidbody.AddRelativeForce(Vector3.up * jumpForce, ForceMode.VelocityChange);
+            _Rigidbody.AddForce((moveDir * moveAxis) * acceleration, ForceMode.Acceleration);
         }
     }
 }
