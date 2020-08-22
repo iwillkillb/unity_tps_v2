@@ -9,6 +9,7 @@ public class RBMovement : MonoBehaviour
     // Components
     public Animator _Animator;
     Rigidbody _Rigidbody;
+    PlayerInput playerInput;
     CapsuleCollider _CapsuleCollider;
 
     // Input field
@@ -20,6 +21,7 @@ public class RBMovement : MonoBehaviour
     public float moveSpeed = 7f;
     public float acceleration = 20f;
     public float slopeForce = 5f;
+    Vector3 groundNormal;
     Vector3 moveAxis;
     Quaternion moveDir;
 
@@ -56,23 +58,25 @@ public class RBMovement : MonoBehaviour
         // Components connecting
         _Rigidbody = GetComponent<Rigidbody>();
         _CapsuleCollider = GetComponent<CapsuleCollider>();
+        playerInput = GetComponent<PlayerInput>();
     }
 
     void Update()
     {
+        // Input
+        inputAxisHor = playerInput.axisHor;
+        inputAxisVer = playerInput.axisVer;
+        inputJump = playerInput.axisJump;
+
         // Ground Check
         isGrounded = Physics.CheckSphere(groundCheckPoint.position, groundCheckRadius, terrainLayer);
+        groundNormal = GetGroundNormal();
 
         // Jump
         if (inputJump && isGrounded)
         {
             _Rigidbody.AddRelativeForce(Vector3.up * jumpForce, ForceMode.VelocityChange);
         }
-
-        // Input
-        inputAxisHor = Input.GetAxis("Horizontal");
-        inputAxisVer = Input.GetAxis("Vertical");
-        inputJump = Input.GetButtonDown("Jump");
 
         //SetVerticalVelocity();
         Movement();
@@ -88,9 +92,10 @@ public class RBMovement : MonoBehaviour
         Vector3 groundNormal = Vector3.up;
 
         // Slope Check
-        if (isGrounded && Physics.Raycast(slopeCheckPoint.position, Vector3.down, out slopeHit, slopeCheckRange, terrainLayer))
+        if (Physics.Raycast(slopeCheckPoint.position, Vector3.down, out slopeHit, slopeCheckRange, terrainLayer))
         {
             groundNormal = slopeHit.normal;
+            Debug.Log(Vector3.Angle(Vector3.up, groundNormal));
         }
 
         return groundNormal;
@@ -100,14 +105,12 @@ public class RBMovement : MonoBehaviour
     {
         // Initialization actual moving values.
         // Use Input data
-        if (isGrounded)
-        {
-            moveAxis = Vector3.right * inputAxisHor + Vector3.forward * inputAxisVer;
-            // Get trnRotationReference's y rotation.
-            moveDir = Quaternion.Euler(Vector3.up * Camera.main.transform.eulerAngles.y);
-        }
+        Vector3 moveAxis = Vector3.right * inputAxisHor + Vector3.forward * inputAxisVer;
 
-        Quaternion groundQuaternion = Quaternion.FromToRotation(transform.up, GetGroundNormal());
+        // Get Camera's y rotation.
+        Quaternion moveDir = Quaternion.Euler(Vector3.up * Camera.main.transform.eulerAngles.y);
+
+        Quaternion groundQuaternion = Quaternion.FromToRotation(transform.up, groundNormal);
 
         if (inputAxisHor != 0f || inputAxisVer != 0f)
         {

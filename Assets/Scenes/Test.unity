@@ -4587,7 +4587,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &985511910
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4707,7 +4707,6 @@ MonoBehaviour:
   animator: {fileID: 0}
   moveSpeed: 7
   slopeForce: 5
-  inputAngle: 0
   rotationSlerp: 5
   gravity: 9.81
   jumpForce: 5
@@ -6426,14 +6425,16 @@ GameObject:
   - component: {fileID: 1263578149}
   - component: {fileID: 1263578147}
   - component: {fileID: 1263578146}
+  - component: {fileID: 1263578152}
   - component: {fileID: 1263578145}
+  - component: {fileID: 1263578148}
   m_Layer: 8
   m_Name: Player RB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1263578144
 Transform:
   m_ObjectHideFlags: 0
@@ -6461,7 +6462,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1263578143}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6ab4831c686f74d488707d0c68c9d449, type: 3}
   m_Name: 
@@ -6512,6 +6513,30 @@ CapsuleCollider:
   m_Height: 1.6
   m_Direction: 1
   m_Center: {x: 0, y: 0.8, z: 0}
+--- !u!114 &1263578148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1263578143}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc819c24226aad445a57e1b900a3b45a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _Animator: {fileID: 0}
+  moveSpeed: 10
+  acceleration: 50
+  rotationSlerp: 5
+  isStaringFront: 0
+  jumpForce: 10
+  terrainLayer:
+    serializedVersion: 2
+    m_Bits: 1
+  groundCheckPoint: {fileID: 1854290949}
+  groundCheckRadius: 0.19
+  isGrounded: 0
 --- !u!114 &1263578149
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6562,6 +6587,18 @@ MonoBehaviour:
   armor:
     baseValue: 0
     sumModifier: 0
+--- !u!114 &1263578152
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1263578143}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21f670b3b8ab7e44d868e07df49e3dc4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1292965995
 GameObject:
   m_ObjectHideFlags: 0
@@ -7451,7 +7488,7 @@ MonoBehaviour:
   terrainLayerMask:
     serializedVersion: 2
     m_Bits: 1
-  trackingTarget: {fileID: 985511914}
+  trackingTarget: {fileID: 1263578144}
   useRotationXLimit: 1
   minXAxis: -45
   maxXAxis: 75

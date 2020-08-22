@@ -94,6 +94,7 @@
     <Compile Include="Assets\Scripts\Test\HovorMovement.cs" />
     <Compile Include="Assets\Scripts\Test\HovorSound.cs" />
     <Compile Include="Assets\Scripts\Test\RBMovement.cs" />
+    <Compile Include="Assets\Scripts\Test\RBMovement1.cs" />
     <Compile Include="Assets\Scripts\UI\EquipmentSlot.cs" />
     <Compile Include="Assets\Scripts\UI\EquipmentUI.cs" />
     <Compile Include="Assets\Scripts\UI\HealthUI.cs" />
