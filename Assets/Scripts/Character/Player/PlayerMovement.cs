@@ -38,7 +38,7 @@ public class PlayerMovement : MonoBehaviour
         characterController = GetComponent<CharacterController>();
     }
 
-    void FixedUpdate()
+    void Update()
     {
         SetVerticalVelocity(playerInput.axisJump);
         Movement(playerInput.axisHor, playerInput.axisVer);

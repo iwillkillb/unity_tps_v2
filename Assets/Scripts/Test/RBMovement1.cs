@@ -30,6 +30,8 @@ public class RBMovement1 : MonoBehaviour
     public LayerMask terrainLayer;
     public Transform groundCheckPoint;
     public float groundCheckRadius = 0.1f;
+    public float slopeCheckDistance = 1f;
+    public float wallCheckDistance = 0.1f;
     public bool isGrounded;
 
 
@@ -70,7 +72,8 @@ public class RBMovement1 : MonoBehaviour
         // Slope Check
         RaycastHit slopeHit;
         Vector3 groundNormal = Vector3.up;
-        if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, 10f))
+
+        if (isGrounded && Physics.Raycast(transform.position, Vector3.down, out slopeHit, slopeCheckDistance))
         {
             groundNormal = slopeHit.normal;
         }
@@ -93,7 +96,7 @@ public class RBMovement1 : MonoBehaviour
             RaycastHit hitBody;
 
             // Aerial collision -> Zero speed
-            if (Physics.CapsuleCast(capsuleCastPoint1, capsuleCastPoint2, _CapsuleCollider.radius, moveDir * moveAxis.normalized, out hitBody, _CapsuleCollider.radius))
+            if (Physics.CapsuleCast(capsuleCastPoint1, capsuleCastPoint2, _CapsuleCollider.radius, moveDir * moveAxis.normalized, out hitBody, wallCheckDistance))
             {
                 // WWWWW                 WWWWW
                 // WWW                     WWW
