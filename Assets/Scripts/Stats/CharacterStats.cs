@@ -13,8 +13,7 @@ public class CharacterStats : MonoBehaviour
     public float attackSpeed = 1f;
     public float attackDelay = 0.5f;
     private float attackCooldown = 0f;
-
-    public event System.Action onAttack;
+    public event System.Action OnAttack;
 
     [Header("Stat")]
     public Stat damage;
@@ -50,10 +49,7 @@ public class CharacterStats : MonoBehaviour
         currentHealth -= damage;
         Debug.Log(transform.name + " takes " + damage + "damage.");
 
-        if (OnHealthChanged != null)
-        {
-            OnHealthChanged(maxHealth, currentHealth);
-        }
+        OnHealthChanged(maxHealth, currentHealth);
 
         if (currentHealth <= 0)
         {
@@ -80,10 +76,7 @@ public class CharacterStats : MonoBehaviour
         StartCoroutine(DoDamage(targetStats, attackDelay));
 
         // Event
-        if (onAttack != null)
-        {
-            onAttack();
-        }
+        OnAttack();
 
     }
     IEnumerator DoDamage(CharacterStats stats, float delay)

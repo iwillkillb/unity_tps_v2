@@ -21,8 +21,13 @@ public class PlayerManager : MonoBehaviour
     }
     #endregion
 
-    public void KillPlayer()
+    public void OnPlayerDied()
     {
         //SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
+    public void PlayerRevive()
+    {
+
     }
 }
